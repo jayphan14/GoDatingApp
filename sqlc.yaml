@@ -1,0 +1,27 @@
+version: "2"
+
+sql:
+  - engine: "postgresql"
+    queries: "./db/query/user.sql"
+    schema: "./db/migration/20231219213113_dir.up.sql"
+    gen:
+      go:
+        package: "user"
+        out: "./sqlc/user"
+        sql_package: "pgx/v5"
+        emit_json_tags: true
+        emit_prepared_queries: false
+        emit_interface: false
+        emit_exact_table_names: false
+  - engine: "postgresql"
+    queries: "./db/query/like.sql"
+    schema: "./db/migration/20231219213113_dir.up.sql"
+    gen:
+      go:
+        package: "like"
+        out: "./sqlc/like"
+        sql_package: "pgx/v5"
+        emit_json_tags: true
+        emit_prepared_queries: false
+        emit_interface: false
+        emit_exact_table_names: false
