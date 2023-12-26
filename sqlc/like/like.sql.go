@@ -3,7 +3,7 @@
 //   sqlc v1.24.0
 // source: like.sql
 
-package like
+package db
 
 import (
 	"context"
