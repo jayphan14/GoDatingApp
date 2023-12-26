@@ -10,22 +10,22 @@ import (
 
 type Like struct {
 	ID         pgtype.UUID        `json:"id"`
-	SenderID   pgtype.UUID        `json:"senderID"`
-	ReceiverID pgtype.UUID        `json:"receiverID"`
+	SenderID   pgtype.UUID        `json:"sender_id"`
+	ReceiverID pgtype.UUID        `json:"receiver_id"`
 	CreatedAt  pgtype.Timestamptz `json:"created_at"`
 }
 
 type Match struct {
 	ID        pgtype.UUID        `json:"id"`
-	User1ID   pgtype.UUID        `json:"user1ID"`
-	User2ID   pgtype.UUID        `json:"user2ID"`
+	User1id   pgtype.UUID        `json:"user1id"`
+	User2id   pgtype.UUID        `json:"user2id"`
 	CreatedAt pgtype.Timestamptz `json:"created_at"`
 }
 
 type Message struct {
 	ID         pgtype.UUID        `json:"id"`
-	SenderID   pgtype.UUID        `json:"senderID"`
-	ReceiverID pgtype.UUID        `json:"receiverID"`
+	SenderID   pgtype.UUID        `json:"sender_id"`
+	ReceiverID pgtype.UUID        `json:"receiver_id"`
 	Content    pgtype.Text        `json:"content"`
 	CreatedAt  pgtype.Timestamptz `json:"created_at"`
 }
