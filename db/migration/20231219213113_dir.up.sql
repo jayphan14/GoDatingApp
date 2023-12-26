@@ -18,30 +18,30 @@ CREATE TABLE "users" (
 -- Create "message" table with corrected foreign key constraints
 CREATE TABLE "message" (
   "id" uuid PRIMARY KEY DEFAULT (uuid_generate_v4()),
-  "senderID" uuid NOT NULL,
-  "receiverID" uuid NOT NULL,
+  "sender_id" uuid NOT NULL,
+  "receiver_id" uuid NOT NULL,
   "content" text,
   "created_at" timestamptz DEFAULT (now()),
-  FOREIGN KEY ("senderID") REFERENCES "users" ("id"),
-  FOREIGN KEY ("receiverID") REFERENCES "users" ("id")
+  FOREIGN KEY ("sender_id") REFERENCES "users" ("id"),
+  FOREIGN KEY ("receiver_id") REFERENCES "users" ("id")
 );
 
 -- Create "likes" table with corrected foreign key constraints
 CREATE TABLE "likes" (
   "id" uuid PRIMARY KEY DEFAULT (uuid_generate_v4()),
-  "senderID" uuid NOT NULL,
-  "receiverID" uuid NOT NULL,
+  "sender_id" uuid NOT NULL,
+  "receiver_id" uuid NOT NULL,
   "created_at" timestamptz DEFAULT (now()),
-  FOREIGN KEY ("senderID") REFERENCES "users" ("id"),
-  FOREIGN KEY ("receiverID") REFERENCES "users" ("id")
+  FOREIGN KEY ("sender_id") REFERENCES "users" ("id"),
+  FOREIGN KEY ("receiver_id") REFERENCES "users" ("id")
 );
 
 -- Create "matches" table with corrected foreign key constraints
 CREATE TABLE "matches" (
   "id" uuid PRIMARY KEY DEFAULT (uuid_generate_v4()),
-  "user1ID" uuid NOT NULL,
-  "user2ID" uuid NOT NULL,
+  "user1id" uuid NOT NULL,
+  "user2id" uuid NOT NULL,
   "created_at" timestamptz DEFAULT (now()),
-  FOREIGN KEY ("user1ID") REFERENCES "users" ("id"),
-  FOREIGN KEY ("user2ID") REFERENCES "users" ("id")
+  FOREIGN KEY ("user1id") REFERENCES "users" ("id"),
+  FOREIGN KEY ("user2id") REFERENCES "users" ("id")
 );
