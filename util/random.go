@@ -2,6 +2,7 @@ package util
 
 import (
 	"math/rand"
+	"strconv"
 	"strings"
 	"time"
 )
@@ -10,11 +11,11 @@ func init() {
 	rand.Seed(time.Now().UnixNano())
 }
 
-func randInt(minVal, maxVal int64) int64 {
+func RandInt(minVal, maxVal int64) int64 {
 	return minVal + rand.Int63n(maxVal-minVal+1)
 }
 
-func randString(length int) string {
+func RandString(length int) string {
 	const alphabet = "abcdefghijklmnopqrstuvwxyz"
 	var builder strings.Builder
 
@@ -26,30 +27,28 @@ func randString(length int) string {
 	return builder.String()
 }
 
-func randName() string {
+func RandName() string {
 	availableName := []string{"Jay", "John", "David", "Leon"}
 	randomIndex := rand.Intn(len(availableName))
 	return availableName[randomIndex]
 }
 
-func randEmail() string {
-	return randName() + string(randInt(100, 999)) + "@gmail.com"
+func RandEmail() string {
+	return RandName() + strconv.Itoa(int(RandInt(100, 999))) + "@gmail.com"
 }
 
-func randPassword() string {
-	return randString(15)
+func RandPassword() string {
+	return RandString(15)
 }
 
-func randGender() string {
+func RandGender() string {
 	availableGender := []string{"Male", "Female", "Other"}
 	randomIndex := rand.Intn(len(availableGender))
 	return availableGender[randomIndex]
 }
 
-func randUniversity() string {
+func RandUniversity() string {
 	availableUniversity := []string{"University of Waterloo", "Wilfrid Laurier University"}
 	randomIndex := rand.Intn(len(availableUniversity))
 	return availableUniversity[randomIndex]
 }
-
-
