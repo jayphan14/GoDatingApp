@@ -10,6 +10,10 @@ RETURNING *;
 SELECT * FROM likes
 WHERE id = $1 LIMIT 1;
 
+-- name: GetLikeByUsers :one
+SELECT * FROM likes
+WHERE sender_id = $1 AND receiver_id = $2;
+
 -- name: ListLikesReceived :many
 SELECT * FROM likes
 WHERE receiver_id = $1;

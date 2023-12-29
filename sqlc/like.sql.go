@@ -69,6 +69,28 @@ func (q *Queries) GetLike(ctx context.Context, id pgtype.UUID) (Like, error) {
 	return i, err
 }
 
+const getLikeByUsers = `-- name: GetLikeByUsers :one
+SELECT id, sender_id, receiver_id, created_at FROM likes
+WHERE sender_id = $1 AND receiver_id = $2
+`
+
+type GetLikeByUsersParams struct {
+	SenderID   pgtype.UUID `json:"sender_id"`
+	ReceiverID pgtype.UUID `json:"receiver_id"`
+}
+
+func (q *Queries) GetLikeByUsers(ctx context.Context, arg GetLikeByUsersParams) (Like, error) {
+	row := q.db.QueryRow(ctx, getLikeByUsers, arg.SenderID, arg.ReceiverID)
+	var i Like
+	err := row.Scan(
+		&i.ID,
+		&i.SenderID,
+		&i.ReceiverID,
+		&i.CreatedAt,
+	)
+	return i, err
+}
+
 const listLikesReceived = `-- name: ListLikesReceived :many
 SELECT id, sender_id, receiver_id, created_at FROM likes
 WHERE receiver_id = $1
