@@ -12,6 +12,7 @@ import (
 )
 
 var testQueries *Queries
+var testDB *pgxpool.Pool
 
 const (
 	dbDriver = "postgres"
@@ -19,12 +20,13 @@ const (
 )
 
 func TestMain(m *testing.M) {
-	connPool, err := pgxpool.New(context.Background(), dbSource)
+	var err error
+	testDB, err = pgxpool.New(context.Background(), dbSource)
 	if err != nil {
 		log.Fatal("DB can not be connected", err)
 	}
 
-	testQueries = New(connPool)
+	testQueries = New(testDB)
 
 	os.Exit(m.Run())
 }
