@@ -38,6 +38,18 @@ func (server *Server) CreateUser(ctx *gin.Context) {
 		BioPictures: req.BioPictures,
 	}
 
+	// Check if user exist:
+	existingUser, errGettingUserWithEmail := server.store.GetUserByEmail(ctx, req.Email)
+	if errGettingUserWithEmail != nil {
+		if existingUser.Email != "" {
+			ctx.JSON(http.StatusNotFound, util.ErrorResponseString("User already exist"))
+			return
+		}
+	} else {
+		ctx.JSON(http.StatusNotFound, util.ErrorResponseString("User already exist"))
+		return
+	}
+
 	newUser, errCreatingUser := server.store.CreateUser(ctx, arg)
 
 	if errCreatingUser != nil {
