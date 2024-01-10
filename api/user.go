@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/jackc/pgx/v5/pgtype"
 	db "github.com/jayphan14/GoDatingApp/sqlc"
 	"github.com/jayphan14/GoDatingApp/util"
 )
@@ -82,6 +83,31 @@ func (server *Server) GetUserByEmail(ctx *gin.Context) {
 			return
 		}
 		ctx.JSON(http.StatusNotFound, util.ErrorResponse(errGettingUserWithEmail))
+	}
+	ctx.JSON(http.StatusOK, existingUser)
+}
+
+type getUserByIdRequest struct {
+	ID pgtype.UUID `uri:"id" binding:"required"`
+}
+
+func (server *Server) GetUserById(ctx *gin.Context) {
+	var req getUserByIdRequest
+
+	// check if the Request has all the needed params
+	if errBinding := ctx.ShouldBindUri(&req); errBinding != nil {
+		ctx.JSON(http.StatusBadRequest, util.ErrorResponse(errBinding))
+		return
+	}
+
+	existingUser, errGettingUserWithID := server.store.GetUser(ctx, req.ID)
+	if errGettingUserWithID != nil {
+		// No user exist
+		if errGettingUserWithID == sql.ErrNoRows {
+			ctx.JSON(http.StatusNotFound, util.ErrorResponse(errGettingUserWithID))
+			return
+		}
+		ctx.JSON(http.StatusNotFound, util.ErrorResponse(errGettingUserWithID))
 	}
 	ctx.JSON(http.StatusOK, existingUser)
 }
