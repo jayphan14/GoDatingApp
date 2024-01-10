@@ -1,6 +1,7 @@
 package api
 
 import (
+	"database/sql"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -58,4 +59,29 @@ func (server *Server) CreateUser(ctx *gin.Context) {
 	}
 
 	ctx.JSON(http.StatusOK, newUser)
+}
+
+type getUserByEmailRequest struct {
+	Email string `uri:"email" binding:"required"`
+}
+
+func (server *Server) GetUserByEmail(ctx *gin.Context) {
+	var req getUserByEmailRequest
+
+	// check if the Request has all the needed params
+	if errBinding := ctx.ShouldBindUri(&req); errBinding != nil {
+		ctx.JSON(http.StatusBadRequest, util.ErrorResponse(errBinding))
+		return
+	}
+
+	existingUser, errGettingUserWithEmail := server.store.GetUserByEmail(ctx, req.Email)
+	if errGettingUserWithEmail != nil {
+		// No user exist
+		if errGettingUserWithEmail == sql.ErrNoRows {
+			ctx.JSON(http.StatusNotFound, util.ErrorResponse(errGettingUserWithEmail))
+			return
+		}
+		ctx.JSON(http.StatusNotFound, util.ErrorResponse(errGettingUserWithEmail))
+	}
+	ctx.JSON(http.StatusOK, existingUser)
 }

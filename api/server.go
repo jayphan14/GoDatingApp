@@ -16,6 +16,7 @@ func NewServer(store *db.Store) *Server {
 
 	// DEFINED ROUTES:
 	newRouter.POST("/users", newServer.CreateUser)
+	newRouter.GET("/users/:email", newServer.GetUserByEmail)
 
 	newServer.router = newRouter
 	return newServer
