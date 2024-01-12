@@ -111,3 +111,42 @@ func (server *Server) GetUserById(ctx *gin.Context) {
 	}
 	ctx.JSON(http.StatusOK, existingUser)
 }
+
+type updateUserRequest struct {
+	ID          pgtype.UUID `json:"id" binding:"required"`
+	Username    string      `json:"username" binding:"required"`
+	Email       string      `json:"email" binding:"required"`
+	Password    string      `json:"password" binding:"required"`
+	Gender      string      `json:"gender" binding:"required,oneof=M F"`
+	University  string      `json:"university" binding:"required"`
+	Picture     []byte      `json:"picture" binding:"required"`
+	Bio         string      `json:"bio" binding:"required"`
+	BioPictures []string    `json:"bio_pictures" binding:"required"`
+}
+
+func (server *Server) UpdateUser(ctx *gin.Context) {
+	var req updateUserRequest
+	// check if the Request has all the needed params
+	if errBinding := ctx.ShouldBindJSON(&req); errBinding != nil {
+		ctx.JSON(http.StatusBadRequest, util.ErrorResponse(errBinding))
+		return
+	}
+
+	arg := db.UpdateUserParams{
+		ID:          req.ID,
+		Username:    req.Username,
+		Email:       req.Email,
+		Password:    req.Password,
+		Gender:      req.Gender,
+		University:  req.University,
+		Picture:     req.Picture,
+		Bio:         req.Bio,
+		BioPictures: req.BioPictures,
+	}
+
+	updatedUser, errUpdatingUser := server.store.UpdateUser(ctx, arg)
+	if errUpdatingUser != nil {
+		ctx.JSON(http.StatusInternalServerError, util.ErrorResponse(errUpdatingUser))
+	}
+	ctx.JSON(http.StatusOK, updatedUser)
+}
