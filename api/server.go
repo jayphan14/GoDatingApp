@@ -22,6 +22,7 @@ func NewServer(store *db.Store) *Server {
 	// For exampla: localhost:8080/users/id/"1432bf1f-a448-4f50-a20b-5b7ed4a9ad2b"
 	newRouter.PATCH("/users", newServer.UpdateUser)
 	newRouter.DELETE("/users/:id", newServer.DeleteUser)
+	newRouter.GET("/users", newServer.ListUsers)
 
 	newServer.router = newRouter
 	return newServer

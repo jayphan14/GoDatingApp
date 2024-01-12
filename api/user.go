@@ -170,3 +170,28 @@ func (server *Server) DeleteUser(ctx *gin.Context) {
 	}
 	ctx.JSON(http.StatusOK, nil)
 }
+
+type listUserRequest struct {
+	Limit  int64 `json:"limit" binding:"required"`
+	Offset int64 `json:"offset"`
+}
+
+func (server *Server) ListUsers(ctx *gin.Context) {
+	var req listUserRequest
+
+	// check if the Request has all the needed params
+	if errBinding := ctx.ShouldBindJSON(&req); errBinding != nil {
+		ctx.JSON(http.StatusBadRequest, util.ErrorResponse(errBinding))
+		return
+	}
+	arg := db.ListUsersParams{
+		Limit:  int32(req.Limit),
+		Offset: int32(req.Offset),
+	}
+
+	users, errorGettingUsers := server.store.ListUsers(ctx, arg)
+	if errorGettingUsers != nil {
+		ctx.JSON(http.StatusInternalServerError, util.ErrorResponse(errorGettingUsers))
+	}
+	ctx.JSON(http.StatusOK, users)
+}
