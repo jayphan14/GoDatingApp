@@ -7,21 +7,21 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/jayphan14/GoDatingApp/api"
 	db "github.com/jayphan14/GoDatingApp/sqlc"
-)
-
-const (
-	dbDriver      = "postgres"
-	dbSource      = "postgresql://root:secret@localhost:5432/datingdb?sslmode=disable"
-	serverAddress = "0.0.0.0:8080"
+	"github.com/jayphan14/GoDatingApp/util"
 )
 
 func main() {
-	connPool, err := pgxpool.New(context.Background(), dbSource)
+	config, err := util.LoadConfig(".")
+
+	if err != nil {
+		log.Fatal("cannot load config:", err)
+	}
+	connPool, err := pgxpool.New(context.Background(), config.DBSource)
 	if err != nil {
 		log.Fatal("cannot connect to db:", err)
 	}
 
 	store := db.NewStore(connPool)
 	newServer := api.NewServer(store)
-	newServer.Start(serverAddress)
+	newServer.Start(config.ServerAddress)
 }
