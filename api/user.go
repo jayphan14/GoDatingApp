@@ -150,3 +150,23 @@ func (server *Server) UpdateUser(ctx *gin.Context) {
 	}
 	ctx.JSON(http.StatusOK, updatedUser)
 }
+
+type deleteUserRequest struct {
+	ID pgtype.UUID `uri:"id" binding:"required"`
+}
+
+func (server *Server) DeleteUser(ctx *gin.Context) {
+	var req deleteUserRequest
+
+	// check if the Request has all the needed params
+	if errBinding := ctx.ShouldBindUri(&req); errBinding != nil {
+		ctx.JSON(http.StatusBadRequest, util.ErrorResponse(errBinding))
+		return
+	}
+
+	errorDeletingUser := server.store.DeleteUser(ctx, req.ID)
+	if errorDeletingUser != nil {
+		ctx.JSON(http.StatusInternalServerError, util.ErrorResponse(errorDeletingUser))
+	}
+	ctx.JSON(http.StatusOK, nil)
+}
