@@ -7,6 +7,7 @@ import (
 	"testing"
 
 	"github.com/jackc/pgx/v5/pgxpool"
+	"github.com/jayphan14/GoDatingApp/util"
 
 	_ "github.com/lib/pq"
 )
@@ -14,14 +15,13 @@ import (
 var testQueries *Queries
 var testDB *pgxpool.Pool
 
-const (
-	dbDriver = "postgres"
-	dbSource = "postgresql://root:secret@localhost:5432/datingdb?sslmode=disable"
-)
-
 func TestMain(m *testing.M) {
+	config, errLoadingConfig := util.LoadConfig("../")
+	if errLoadingConfig != nil {
+		log.Fatal("cant load config", errLoadingConfig)
+	}
 	var err error
-	testDB, err = pgxpool.New(context.Background(), dbSource)
+	testDB, err = pgxpool.New(context.Background(), config.DBSource)
 	if err != nil {
 		log.Fatal("DB can not be connected", err)
 	}
